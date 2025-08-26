@@ -15,12 +15,12 @@ const Card: React.FC<React.PropsWithChildren<{ title: string }>> = ({ title, chi
 
 export default function Lesson() {
   // ---------- 1) Avatar Mini-Lektion (TTS) ----------
-  const miniScript = `Willkommen! In dieser Grundlageneinheit geht es um Lüftungsanlagen
-in der Lebensmittel- & Getränkeindustrie. Wichtige Punkte:
-Erstens: Hygiene und Produktsicherheit – definierte Luftqualität, Druckkaskaden und Filtration.
-Zweitens: Mitarbeiterschutz – CO₂, Temperatur und Feuchte müssen im Soll bleiben.
-Drittens: Energie – Ventilatoren, Wärmerückgewinnung und Betriebsstrategien bestimmen den Verbrauch.
-Direkt im Anschluss prüfen wir die Kernpunkte mit kurzen Kontrollfragen.`
+    const miniScript = `Willkommen zur Grundlagenlektion über Lüftungsanlagen in der Lebensmittel- und Getränkeindustrie.
+In diesen Bereichen entscheidet die Luftqualität direkt über Produktsicherheit und Hygiene. Damit keine Partikel, Aerosole oder Gerüche von weniger reinen in reinere Zonen gelangen, arbeiten wir mit Druckkaskaden: Flure haben den niedrigsten Druck, Produktionsräume liegen leicht darüber und besonders schützenswerte Bereiche, wie Abfüll- oder Abpackzonen, stehen im leichten Überdruck. So strömt Luft kontrolliert in Richtung der reineren Zone.
+
+Die Zuluft wird in mehreren Stufen gefiltert – je nach Anforderung bis zu ISO ePM1 oder HEPA –, konditioniert und über die Anlage verteilt. Eine Wärmerückgewinnung überträgt die in der Abluft enthaltene Wärme auf die Zuluft und senkt dadurch den Heiz- bzw. Kühlbedarf deutlich. Gleichzeitig achten wir auf einen bedarfsgerechten Betrieb: Sensoren für CO₂, Temperatur und Feuchte sowie Anwesenheitssignale steuern die Volumenströme dynamisch. Das spart Ventilatorleistung und Energie, ohne die Luftqualität zu gefährden.
+
+Behalten Sie im Hinterkopf: Effizienz entsteht durch die Kombination aus guter Auslegung, sauberem Betrieb und kontinuierlichem Monitoring. Nach diesem kurzen Überblick prüfen wir die Kernpunkte mit drei Kontrollfragen und zeigen anschließend ein vereinfachtes Schema der Lüftungszentrale sowie eine kleine Animation zur Wärmerückgewinnung.`
 
   // ---------- 2) Kontrollfragen (themenspezifisch) ----------
   type CtrlAns = { a?: number; b?: boolean; c?: number }
