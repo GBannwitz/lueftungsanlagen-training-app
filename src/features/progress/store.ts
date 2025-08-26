@@ -3,18 +3,50 @@ import type { ProgressRecord } from './schema'
 
 const STORAGE_KEY = 'lv_training_progress_v1'
 
+// Minimaler Storage-Shim: nutzt localStorage, fällt in Tests auf In-Memory zurück
+type SimpleStorage = {
+  getItem(key: string): string | null
+  setItem(key: string, value: string): void
+  removeItem?(key: string): void
+  clear?(): void
+}
+const storage: SimpleStorage = (() => {
+  try {
+    if (typeof localStorage !== 'undefined') return localStorage as unknown as SimpleStorage
+  } catch { /* ignore */ }
+  const mem = new Map<string, string>()
+  return {
+    getItem: (k) => (mem.has(k) ? mem.get(k)! : null),
+    setItem: (k, v) => { mem.set(k, String(v)) },
+    removeItem: (k) => { mem.delete(k) },
+    clear: () => { mem.clear() }
+  }
+})()
+
+// UUID-Shim: nutzt crypto.randomUUID, sonst Fallback
+const uuid = (): string => {
+  try {
+    // @ts-ignore
+    if (typeof crypto !== 'undefined' && typeof (crypto as any).randomUUID === 'function') {
+      // @ts-ignore
+      return (crypto as any).randomUUID()
+    }
+  } catch { /* ignore */ }
+  return 'uid-' + Math.random().toString(36).slice(2)
+}
+
 function load(): ProgressRecord {
-  const existing = localStorage.getItem(STORAGE_KEY)
+  const existing = storage.getItem(STORAGE_KEY)
   if (existing) return JSON.parse(existing)
-  const userId = crypto.randomUUID()
   const now = new Date().toISOString()
+  const userId = uuid()
   const empty: ProgressRecord = { userId, lessons: {}, badges: [], totalScore: 0 }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(empty))
+  storage.setItem(STORAGE_KEY, JSON.stringify(empty))
   return empty
 }
 
 function save(data: ProgressRecord) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  storage.setItem(STORAGE_KEY, JSON.stringify(data))
 }
 
 export const useProgress = create<{
@@ -48,7 +80,7 @@ export const useProgress = create<{
     return { data: parsed }
   }),
   reset: () => set(_ => {
-    const userId = crypto.randomUUID()
+    const userId = uuid()
     const empty: ProgressRecord = { userId, lessons: {}, badges: [], totalScore: 0 }
     save(empty); return { data: empty }
   })
