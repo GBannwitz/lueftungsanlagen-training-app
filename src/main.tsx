@@ -1,18 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-// ❌ BrowserRouter raus
-// import { BrowserRouter } from 'react-router-dom'
-// ✅ HashRouter rein
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import './styles/index.css'
 
+// Vite setzt BASE_URL automatisch (für GitHub Pages über die Action mit VITE_BASE)
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {/* ❌ <BrowserRouter> … </BrowserRouter> */}
-    {/* ✅ HashRouter vermeidet 404 auf GitHub Pages */}
-    <HashRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <App />
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 )
