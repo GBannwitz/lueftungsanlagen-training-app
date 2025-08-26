@@ -1,0 +1,47 @@
+{
+  "id": "lueftungsanlagen-grundlagen",
+  "version": "1.0.0",
+  "locale": "de",
+  "estimated_minutes": 12,
+  "quiz": {
+    "min_score": 0.7,
+    "randomize": true
+  },
+  "oral_check": {
+    "required": true,
+    "fallback_text": true
+  },
+  "roi_format": "years",
+  "mini_lesson": {
+    "required": true,
+    "format": "avatar_video_tts",
+    "duration_min": 2
+  },
+  "control_check": {
+    "min_items": 2,
+    "types": [
+      "MC",
+      "DragDrop",
+      "Decision"
+    ],
+    "randomize": true
+  },
+  "media_requirements": {
+    "min_images": 1,
+    "min_videos": 0,
+    "allow_audio": true,
+    "allow_animation": true
+  },
+  "kpis": [
+    {
+      "name": "Spez. Ventilatorleistung (SFP)",
+      "unit": "kW/(m³/s)",
+      "range": "1.5–2.5 (typisch gut)"
+    },
+    {
+      "name": "Filter Δp (F7–ePM1 60%)",
+      "unit": "Pa",
+      "range": "100–200"
+    }
+  ]
+}

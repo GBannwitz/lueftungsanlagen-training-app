@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand: #22c55e;
+}
+
+html:focus-within { scroll-behavior: smooth; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
