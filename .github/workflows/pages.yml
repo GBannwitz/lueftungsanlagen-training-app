@@ -22,8 +22,10 @@ jobs:
         with:
           node-version: 18
           cache: npm
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: npm install
-      - run: VITE_BASE=/lueftungsanlagen-training-app/ npm run build
+      - run: VITE_BASE=${{ steps.pages.outputs.base_path }} npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
