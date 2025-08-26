@@ -1,43 +1,56 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 type Props = {
-  text: string
-  autoplay?: boolean
-  captionsVtt?: string
-  fallbackVideo?: string
+  script: string
+  poster?: string
+  onEnd?: () => void
 }
 
-export default function Avatar({ text, autoplay = true, captionsVtt, fallbackVideo }: Props) {
-  const [useTTS, setUseTTS] = React.useState<boolean>(!!('speechSynthesis' in window))
-  const audioRef = React.useRef<HTMLAudioElement>(null)
+const getSynth = () =>
+  typeof window !== 'undefined' && 'speechSynthesis' in window
+    ? window.speechSynthesis
+    : undefined
 
-  React.useEffect(()=>{
-    if (!useTTS) return
-    const utter = new SpeechSynthesisUtterance(text)
-    utter.lang = 'de-DE'
-    speechSynthesis.cancel()
-    if (autoplay) speechSynthesis.speak(utter)
-    return () => speechSynthesis.cancel()
-  }, [text, useTTS, autoplay])
+export default function Avatar({ script, poster = '/assets/icons/icon-512.png', onEnd }: Props) {
+  const [speaking, setSpeaking] = useState(false)
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const synth = getSynth()
+
+  const stop = () => {
+    try { synth?.cancel() } catch {}
+    setSpeaking(false)
+  }
+
+  const start = () => {
+    if (!synth) return
+    stop()
+    const u = new SpeechSynthesisUtterance(script)
+    u.lang = 'de-DE'
+    u.rate = 1.02
+    u.onend = () => { setSpeaking(false); onEnd?.() }
+    utterRef.current = u
+    setSpeaking(true)
+    synth.speak(u)
+  }
+
+  useEffect(() => () => stop(), [])
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl">
-      <div className="w-24 h-24 rounded-full bg-emerald-500 grid place-items-center text-white font-bold text-xl" aria-hidden>AV</div>
+    <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-800">
+      <img src={poster} alt="Avatar" className="w-24 h-24 rounded-full ring-2 ring-emerald-400" />
       <div className="flex-1">
-        {useTTS ? (
-          <p aria-live="polite" className="text-slate-900 dark:text-slate-100">{text}</p>
-        ) : (
-          <div>
-            <video className="w-full rounded" controls src={fallbackVideo}>
-              {captionsVtt && <track kind="captions" srcLang="de" label="Deutsch" src={captionsVtt} default />}
-            </video>
-            <p className="text-sm text-slate-600 mt-1">Untertitel verfügbar</p>
-          </div>
-        )}
+        <div className="text-sm text-slate-600 dark:text-slate-300">Avatar-Mini-Lektion (TTS)</div>
+        <div className="mt-2 space-x-2">
+          <button onClick={start} className="px-3 py-1 rounded-lg bg-emerald-600 text-white">
+            {speaking ? 'Neu starten' : 'Abspielen'}
+          </button>
+          <button onClick={stop} className="px-3 py-1 rounded-lg bg-slate-200 dark:bg-slate-700">Stop</button>
+        </div>
+        <details className="mt-3">
+          <summary className="cursor-pointer">Untertitel anzeigen</summary>
+          <p className="mt-2 text-sm whitespace-pre-wrap">{script}</p>
+        </details>
       </div>
-      <button className="px-3 py-1 rounded bg-slate-200 dark:bg-slate-700" onClick={()=>setUseTTS(!useTTS)}>
-        {useTTS ? 'Fallback-Video' : 'TTS verwenden'}
-      </button>
     </div>
   )
 }
